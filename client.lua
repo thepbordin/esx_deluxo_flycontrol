@@ -3,15 +3,7 @@
 -- PANCAKE 2007 CITY
 
 local isTransfrom, timeuse, canTransform = {}, {}, true
-
 local veh, lastveh
-local Config = {}
-Config.TimeFlight = 30 -- in secs that DELUXO Can fly
-Config.Debug = false -- Enable pancakeNotify Debug
-
-
-
-
 Citizen.CreateThread(function()
 
     while true do
@@ -28,13 +20,17 @@ Citizen.CreateThread(function()
                     if IsControlJustReleased(0, 357) and not isTransfrom[lastveh] and canTransform and GetIsVehicleEngineRunning(veh) then
                         isTransfrom[lastveh] = true
                         timeuse[lastveh] = timeuse[lastveh] or 0
-                        if Config.Debug then exports['pancake_notify']:Alert("", "Status: true", 1500, 'info') end
+                        if Config.Debug then 
+                            exports.pNotify:SendNotification({text = "Status: true", type = "info"})
+                        end
                         Citizen.Wait(500)
                     
                     
                     elseif IsControlJustReleased(0, 357) and isTransfrom[lastveh] and canTransform and GetIsVehicleEngineRunning(veh) then
                         isTransfrom[lastveh] = false
-                        if Config.Debug then exports['pancake_notify']:Alert("", "Status: false", 1500, 'info') end
+                        if Config.Debug then 
+                            exports.pNotify:SendNotification({text = "Status: false", type = "info"})
+                        end
                 
                     end
                 end 
@@ -68,17 +64,19 @@ Citizen.CreateThread(function()
             if timeuse[lastveh] >= Config.TimeFlight then
                 while not CheckIsVehDeluxo(veh) do
                     Citizen.Wait(400)
-                    if Config.Debug then exports['pancake_notify']:Alert("", "ไม่ได้อยู่บน Deluxo", 1500, 'warn')end
+                    if Config.Debug then 
+                        exports.pNotify:SendNotification({text = Locales[Config.Locale]["not_in_deluxo"], type = "error"})
+                    end
                 end
                     SetVehicleHoverTransformPercentage(veh, 0.0)
                     SetVehicleHoverTransformEnabled(veh, false)
                     isTransfrom[lastveh] = false
                     canTransform = false
-                    exports['pancake_notify']:Alert("", "พลังงานหมด", 1500, 'warn')
+                    exports.pNotify:SendNotification({text = Locales[Config.Locale]["out_of_fly_energy"], type = "info"})
                 Citizen.Wait(3000)
                 SetVehicleHoverTransformEnabled(veh, true)          
                 canTransform = true
-                exports['pancake_notify']:Alert("", "พลังงานกลับมาใช้ได้แล้ว", 1500, 'info')
+                exports.pNotify:SendNotification({text = Locales[Config.Locale]["energy_recharged"], type = "success"})
 
             end
         end
@@ -94,11 +92,13 @@ Citizen.CreateThread(function()
                 Citizen.Wait(1000)
                 if timeuse[lastveh] ~= nil then
                     timeuse[lastveh] = timeuse[lastveh] - 1
-                    if Config.Debug then exports['pancake_notify']:Alert("", "TU: "..timeuse[lastveh], 1500, 'info') end
+                    if Config.Debug then 
+                        exports.pNotify:SendNotification({text = "TU:"..timeuse[lastveh], type = "info"})
+                    end
                 end
                 
                 if timeuse[lastveh] == 0 then
-                    exports['pancake_notify']:Alert("", "ชาร์จเต็มแล้ว", 1500, 'info')
+                    exports.pNotify:SendNotification({text = Locales[Config.Locale]["energy_full_recharged"], type = "success"})
                     SetVehicleHoverTransformEnabled(lastveh, true)
                     isTransfrom[lastveh] = false
                 end
@@ -118,7 +118,9 @@ Citizen.CreateThread(function()
             while isTransfrom[lastveh] and CheckIsVehDeluxo(veh) and timeuse[lastveh] < Config.TimeFlight do
                 
                 timeuse[lastveh] = timeuse[lastveh] + 1
-                if Config.Debug then exports['pancake_notify']:Alert("", "TU: "..timeuse[lastveh], 1500, 'info') end
+                if Config.Debug then 
+                    exports.pNotify:SendNotification({text = "TU:"..timeuse[lastveh], type = "info"})
+                end
                 Citizen.Wait(1000)
                 
             end
