@@ -10,7 +10,7 @@ Locales['en'] = {
     ["energy_full_recharged"] = "Energy fully recharged!"
 }
 
-Locals['th'] = {
+Locales['th'] = {
     ["not_in_deluxo"] = "ไม่ได้อยู่ในรถ Deluxo",
     ["out_of_fly_energy"] = "พลังงานหมด",
     ["energy_recharged"] = "พลังงานพร้อมใช้งานแล้ว",
